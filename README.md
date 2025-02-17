@@ -1,17 +1,17 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <div align="center">
 
-# SwiftDataPreviewKit
+# SwiftDataPreviewer
 
-![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fyourusername%2FSwiftDataPreviewKit%2Fbadge%3Ftype%3Dswift-versions)
+![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmarkbattistella%2FSwiftDataPreviewer%2Fbadge%3Ftype%3Dswift-versions)
 
-![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fyourusername%2FSwiftDataPreviewKit%2Fbadge%3Ftype%3Dplatforms)
+![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmarkbattistella%2FSwiftDataPreviewer%2Fbadge%3Ftype%3Dplatforms)
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-white?labelColor=blue&style=flat)
 
 </div>
 
-`SwiftDataPreviewKit` is a lightweight Swift package designed to simplify SwiftUI previews using SwiftData. It provides an **in-memory model container** for use in `DEBUG` builds, allowing you to preview your SwiftData-powered views with sample data.
+`SwiftDataPreviewer` is a lightweight Swift package designed to simplify SwiftUI previews using SwiftData. It provides an **in-memory model container** for use in `DEBUG` builds, allowing you to preview your SwiftData-powered views with sample data.
 
 ## Features
 
@@ -22,20 +22,20 @@
 
 ## Installation
 
-Add `SwiftDataPreviewKit` to your Swift project using Swift Package Manager.
+Add `SwiftDataPreviewer` to your Swift project using Swift Package Manager.
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/markbattistella/SwiftDataPreviewKit", from: "1.0.0")
+  .package(url: "https://github.com/markbattistella/SwiftDataPreviewer", from: "1.0.0")
 ]
 ```
 
-Alternatively, you can add `SwiftDataPreviewKit` using Xcode by navigating to `File > Add Packages` and entering the package repository URL.
+Alternatively, you can add `SwiftDataPreviewer` using Xcode by navigating to `File > Add Packages` and entering the package repository URL.
 
 ## Recommended Usage
 
 > [!NOTE]
-> `SwiftDataPreviewKit` is designed for SwiftUI previews only and is not meant for production usage. It provides an in-memory `ModelContainer` that is automatically configured for SwiftData-powered views.
+> `SwiftDataPreviewer` is designed for SwiftUI previews only and is not meant for production usage. It provides an in-memory `ModelContainer` that is automatically configured for SwiftData-powered views.
 
 ## Usage
 
@@ -64,7 +64,7 @@ Alternatively, you can add `SwiftDataPreviewKit` using Xcode by navigating to `F
 
    ```swift
    #if DEBUG
-   import SwiftDataPreviewKit
+   import SwiftDataPreviewer
 
    let previewContainer = PreviewContainer([User.self])
    #endif
@@ -117,4 +117,4 @@ Contributions are welcome! If you find a bug or have suggestions for improvement
 
 ## Licence
 
-`SwiftDataPreviewKit` is available under the MIT licence. See the LICENCE file for more details.
+`SwiftDataPreviewer` is available under the MIT licence. See the LICENCE file for more details.
