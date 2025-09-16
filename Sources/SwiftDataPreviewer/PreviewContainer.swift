@@ -57,10 +57,8 @@ public struct PreviewContainer {
     ///
     /// - Parameter items: An array of `PersistentModel` instances to add to the main context.
     internal func add(items: [any PersistentModel]) {
-        Task { @MainActor in
-            items.forEach { item in
-                container.mainContext.insert(item)
-            }
+        DispatchQueue.main.sync {
+            items.forEach { container.mainContext.insert($0) }
         }
     }
 }
