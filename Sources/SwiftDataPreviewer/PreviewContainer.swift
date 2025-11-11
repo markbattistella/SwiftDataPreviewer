@@ -10,29 +10,39 @@ import SwiftUI
 import SwiftData
 import SimpleLogger
 
-/// A container for managing SwiftData models in a preview environment.
+/// A helper structure used to create an in-memory `ModelContainer` for SwiftData previews and
+/// testing.
 ///
-/// This structure provides an in-memory `ModelContainer` for use in SwiftUI previews. It allows
-/// inserting persistent models for testing and debugging.
+/// `PreviewContainer` simplifies setting up a temporary persistence container so you can easily
+/// preview SwiftUI views with sample data during development. This container should only be used
+/// within debug builds.
 ///
-/// - Important: This struct is only available in `DEBUG` builds.
-@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, visionOS 1.0, macCatalyst 17.0, *)
+/// Example usage:
+/// ```swift
+/// #if DEBUG
+/// let preview = PreviewContainer([User.self])
+/// #endif
+/// ```
 public struct PreviewContainer {
 
-    /// The SwiftData `ModelContainer` used for storing models.
+    /// The underlying `ModelContainer` instance used for storing model data in memory.
+    ///
+    /// - Note: This is internal and should not be directly accessed outside the preview context.
     internal let container: ModelContainer!
 
     /// A logger instance for logging SwiftData-related messages.
     private let logger = SimpleLogger(category: .swiftData)
 
-    /// Creates a new `PreviewContainer` instance.
+    /// Creates a new in-memory SwiftData container for use in SwiftUI previews or tests.
     ///
     /// - Parameters:
-    ///   - types: An array of `PersistentModel` types to include in the schema.
-    ///   - isStoredInMemoryOnly: A Boolean indicating whether the container should use in-memory
-    ///   storage. Default is `true`.
+    ///   - types: An array of model types conforming to `PersistentModel` that define the schema.
+    ///   - isStoredInMemoryOnly: A Boolean value indicating whether data should be stored only in
+    ///   memory. Defaults to `true` to avoid writing to disk.
+    ///
+    /// If the container fails to initialise, the app will terminate with a `fatalError`.
     public init(
-        _ types: [any PersistentModel.Type],
+        _ types: any PersistentModel.Type...,
         isStoredInMemoryOnly: Bool = true
     ) {
         let schema = Schema(types)
@@ -53,12 +63,14 @@ public struct PreviewContainer {
         }
     }
 
-    /// Inserts an array of `PersistentModel` items into the preview container.
+    /// Inserts the given mock model objects into the preview container’s main context.
     ///
-    /// - Parameter items: An array of `PersistentModel` instances to add to the main context.
+    /// - Parameter items: An array of models conforming to `PersistentModel` to insert into the
+    /// container.
+    @MainActor
     internal func add(items: [any PersistentModel]) {
-        DispatchQueue.main.sync {
-            items.forEach { container.mainContext.insert($0) }
+        items.forEach {
+            container.mainContext.insert($0)
         }
     }
 }
