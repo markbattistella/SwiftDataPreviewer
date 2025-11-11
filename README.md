@@ -43,63 +43,87 @@ Alternatively, you can add `SwiftDataPreviewer` using Xcode by navigating to `Fi
 
    Ensure your SwiftData model conforms to PersistentModel:
 
-   ```swift
-   import SwiftData
+    ```swift
+    import SwiftData
 
-   @Model
-   class User {
-     @Attribute(.unique) var id: UUID
-     var name: String
+    @Model
+    final class Item {
+      var timestamp: Date 
 
-     init(id: UUID = UUID(), name: String) {
-       self.id = id
-       self.name = name
-     }
-   }
-   ```
+      init(timestamp: Date) {
+        self.timestamp = timestamp
+      }
+    }
+    ```
 
-2. Create a Preview Container
+2. Create a Preview Container (optional)
 
-   Define a PreviewContainer with the model types you want to include:
+   Define a `PreviewContainer` with the model types you want to include:
 
-   ```swift
-   #if DEBUG
-   import SwiftDataPreviewer
+    ```swift
+    #if DEBUG
+    import SwiftDataPreviewer
 
-   let previewContainer = PreviewContainer([User.self])
-   #endif
-   ```
+    final class Previewer {
+      let previewContainer = PreviewContainer(Item.self)
+    }
+    #endif
+    ```
 
 3. Use `SwiftDataPreviewer` in Your Previews
 
    Wrap your SwiftUI view in `SwiftDataPreviewer` and pass sample data:
 
-   ```swift
-   #if DEBUG
-   import SwiftUI
-   import SwiftData
+    ```swift
+    #if DEBUG
+    import SwiftUI
+    import SwiftData
 
-   struct UserListView: View {
-     @Query private var users: [User]
+    struct ItemListView: View {
+      @Query private var items: [Item]
 
-     var body: some View {
-       List(users) { user in
-         Text(user.name)
-       }
-     }
-   }
+      var body: some View {
+        List(items) { item in
+          Text(item.timestamp, style: .date)
+        }
+      }
+    }
 
-   struct UserListView_Previews: PreviewProvider {
-     static var previews: some View {
-       SwiftDataPreviewer(preview: previewContainer, items: [
-         User(name: "Alice"),
-         User(name: "Bob"),
-         User(name: "Charlie")
-       ]) {
-         UserListView()
-       }
-     }
-   }
+    // Pre-Xcode 15
+    struct UserListView_Previews: PreviewProvider {
+      static var previews: some View {
+        SwiftDataPreviewer(
+          preview: Previewer.previewContainer,
+          items: [
+            Item(timestamp: Date()),
+            Item(timestamp: Date()),
+            Item(timestamp: Date()),
+          ]
+        ) {
+          ItemListView()
+        }
+      }
+    }
+
+    // Post-Xcode 15
+    #Preview("Array items") {
+      SwiftDataPreviewer(
+        preview: PreviewContainer(Item.self),
+        items: Item.mockItems
+      ) {
+        ItemListView()
+      }
+    }
+
+    #Preview("Single item") {
+      SwiftDataPreviewer(
+        preview: Previewer.previewContainer,
+        item: Item.mockItem
+      ) {
+        ContentView()
+      }
+    }
+
    #endif
    ```
 
