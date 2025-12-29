@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 5.10
 
 import PackageDescription
 
@@ -13,18 +13,12 @@ let package = Package(
         .macCatalyst(.v17),
     ],
     products: [
-        .library(
-            name: "SwiftDataPreviewer",
-            targets: ["SwiftDataPreviewer"]
-        )
+        .library(name: "SwiftDataPreviewer", targets: ["SwiftDataPreviewer"])
     ],
     dependencies: [
-        .package(url: "https://github.com/markbattistella/SimpleLogger", from: .init(2, 0, 0))
+        .package(url: "https://github.com/markbattistella/SimpleLogger", from: "25.12.0")
     ],
     targets: [
-        .target(
-            name: "SwiftDataPreviewer",
-            dependencies: ["SimpleLogger"]
-        )
+        .target(name: "SwiftDataPreviewer", dependencies: ["SimpleLogger"])
     ]
 )
