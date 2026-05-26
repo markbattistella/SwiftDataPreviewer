@@ -4,9 +4,9 @@
 // Website: https://markbattistella.com
 //
 
-import SwiftUI
 import SwiftData
 import SwiftDataPreviewer
+import SwiftUI
 
 // MARK: - Preview
 
@@ -16,20 +16,21 @@ import SwiftDataPreviewer
 /// `PreviewContainer`, inserts an array of mock `Item` instances from `Item.mockItems`, and renders
 /// `ContentView` as if it were running with a live SwiftData store.
 #Preview("Array items") {
-    SwiftDataPreviewer(
-        preview: PreviewContainer(Item.self),
-        items: Item.mockItems
-    ) {
-        ContentView()
-    }
+  SwiftDataPreviewer(
+    preview: PreviewContainer(Item.self),
+    items: Item.mockItems
+  ) {
+    ContentView()
+  }
 }
 
 /// A helper type providing shared preview resources for SwiftData previews.
 ///
 /// This allows reuse of a single in-memory `PreviewContainer` across multiple previews, improving
 /// consistency and avoiding redundant container initialization.
-private final class Preview {
-    static let previewContainer = PreviewContainer(Item.self)
+@MainActor
+private enum Preview {
+  static let previewContainer = PreviewContainer(Item.self)
 }
 
 /// A SwiftUI preview that uses an in-memory SwiftData container populated with a single mock item.
@@ -38,12 +39,12 @@ private final class Preview {
 /// `Item` from `Item.mockItem` before rendering `ContentView`. Use this preview to focus on
 /// layout and behaviour with a single data record.
 #Preview("Single item") {
-    SwiftDataPreviewer(
-        preview: Preview.previewContainer,
-        item: Item.mockItem
-    ) {
-        ContentView()
-    }
+  SwiftDataPreviewer(
+    preview: Preview.previewContainer,
+    item: Item.mockItem
+  ) {
+    ContentView()
+  }
 }
 
 // MARK: - SwiftData Model
@@ -55,29 +56,31 @@ private final class Preview {
 @Model
 final class Item {
 
-    /// The timestamp associated with the item.
-    var timestamp: Date
+  /// The timestamp associated with the item.
+  var timestamp: Date
 
-    /// Creates a new `Item` with a given timestamp.
-    ///
-    /// - Parameter timestamp: The date and time to assign to the item.
-    init(timestamp: Date) {
-        self.timestamp = timestamp
-    }
+  /// Creates a new `Item` with a given timestamp.
+  ///
+  /// - Parameter timestamp: The date and time to assign to the item.
+  init(timestamp: Date) {
+    self.timestamp = timestamp
+  }
 
-    /// A predefined list of mock items for use in previews.
-    ///
-    /// This provides several items with different timestamps for realistic sample data.
-    static let mockItems: [Item] = [
-        Item(timestamp: Date()),
-        Item(timestamp: Date(timeIntervalSinceNow: -3600)),   // 1 hour ago
-        Item(timestamp: Date(timeIntervalSinceNow: -86400)),  // 1 day ago
-        Item(timestamp: Date(timeIntervalSinceNow: 3600)),    // 1 hour ahead
-        Item(timestamp: Date(timeIntervalSince1970: 1700000000)) // fixed date
-    ]
+  /// A predefined list of mock items for use in previews.
+  ///
+  /// This provides several items with different timestamps for realistic sample data.
+  @MainActor
+  static let mockItems: [Item] = [
+    Item(timestamp: Date()),
+    Item(timestamp: Date(timeIntervalSinceNow: -3600)),  // 1 hour ago
+    Item(timestamp: Date(timeIntervalSinceNow: -86400)),  // 1 day ago
+    Item(timestamp: Date(timeIntervalSinceNow: 3600)),  // 1 hour ahead
+    Item(timestamp: Date(timeIntervalSince1970: 1_700_000_000)),  // fixed date
+  ]
 
-    /// A single mock item for convenience in simple previews.
-    static let mockItem: Item = .mockItems.first!
+  /// A single mock item for convenience in simple previews.
+  @MainActor
+  static let mockItem: Item = .mockItems.first!
 }
 
 // MARK: - View
@@ -88,17 +91,17 @@ final class Item {
 /// to `Item` instances in the current model context.
 struct ContentView: View {
 
-    /// The list of `Item` objects fetched from SwiftData.
-    @Query private var items: [Item]
+  /// The list of `Item` objects fetched from SwiftData.
+  @Query private var items: [Item]
 
-    var body: some View {
-        NavigationStack {
-            List(items) { item in
-                Text(item.timestamp, style: .date)
-            }
-            .navigationTitle("Items")
-        }
+  var body: some View {
+    NavigationStack {
+      List(items) { item in
+        Text(item.timestamp, style: .date)
+      }
+      .navigationTitle("Items")
     }
+  }
 }
 
 // MARK: - Example App
@@ -109,10 +112,10 @@ struct ContentView: View {
 /// to preview a SwiftUI view that uses SwiftData without requiring a full persistent store.
 @main
 struct SwiftDataPreviewerExampleApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(for: Item.self, inMemory: true)
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
     }
+    .modelContainer(for: Item.self, inMemory: true)
+  }
 }

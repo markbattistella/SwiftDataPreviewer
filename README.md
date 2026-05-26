@@ -26,16 +26,27 @@ Add `SwiftDataPreviewer` to your Swift project using Swift Package Manager.
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/markbattistella/SwiftDataPreviewer", from: "1.0.0")
+  .package(url: "https://github.com/markbattistella/SwiftDataPreviewer", from: "26.3.8")
 ]
 ```
 
 Alternatively, you can add `SwiftDataPreviewer` using Xcode by navigating to `File > Add Packages` and entering the package repository URL.
 
+## Requirements
+
+- Swift 6.0+
+- iOS 17.0+
+- macOS 14.0+
+- Mac Catalyst 17.0+
+- tvOS 17.0+
+- watchOS 10.0+
+- visionOS 1.0+
+
 ## Recommended Usage
 
 > [!NOTE]
 > `SwiftDataPreviewer` is designed for SwiftUI previews only and is not meant for production usage. It provides an in-memory `ModelContainer` that is automatically configured for SwiftData-powered views.
+> The package's preview helpers are compiled only in `DEBUG`, so guard imports and usage with `#if DEBUG`.
 
 ## Usage
 
@@ -64,8 +75,9 @@ Alternatively, you can add `SwiftDataPreviewer` using Xcode by navigating to `Fi
     #if DEBUG
     import SwiftDataPreviewer
 
-    final class Previewer {
-      let previewContainer = PreviewContainer(Item.self)
+    @MainActor
+    enum Previewer {
+      static let previewContainer = PreviewContainer(Item.self)
     }
     #endif
     ```
@@ -78,6 +90,7 @@ Alternatively, you can add `SwiftDataPreviewer` using Xcode by navigating to `Fi
     #if DEBUG
     import SwiftUI
     import SwiftData
+    import SwiftDataPreviewer
 
     struct ItemListView: View {
       @Query private var items: [Item]

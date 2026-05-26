@@ -110,6 +110,7 @@
 			mainGroup = A31549B02EC2B8D100363060;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				A3A93DA22EC2CA1B004239C4 /* XCLocalSwiftPackageReference ".." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A31549BA2EC2B8D100363060 /* Products */;
@@ -296,7 +297,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -333,7 +334,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -361,9 +362,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		A3A93DA22EC2CA1B004239C4 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		A3A93DA02EC2CA1B004239C4 /* SwiftDataPreviewer */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = A3A93DA22EC2CA1B004239C4 /* XCLocalSwiftPackageReference ".." */;
 			productName = SwiftDataPreviewer;
 		};
 /* End XCSwiftPackageProductDependency section */

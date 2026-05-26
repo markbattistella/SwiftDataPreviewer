@@ -6,32 +6,33 @@
 
 #if DEBUG
 
-import SwiftUI
-import SwiftData
-import SimpleLogger
+  import SwiftUI
+  import SwiftData
+  import SimpleLogger
 
-/// A helper structure used to create an in-memory `ModelContainer` for SwiftData previews and
-/// testing.
-///
-/// `PreviewContainer` simplifies setting up a temporary persistence container so you can easily
-/// preview SwiftUI views with sample data during development. This container should only be used
-/// within debug builds.
-///
-/// Example usage:
-/// ```swift
-/// #if DEBUG
-/// let preview = PreviewContainer([User.self])
-/// #endif
-/// ```
-public struct PreviewContainer {
+  /// A helper structure used to create an in-memory `ModelContainer` for SwiftData previews and
+  /// testing.
+  ///
+  /// `PreviewContainer` simplifies setting up a temporary persistence container so you can easily
+  /// preview SwiftUI views with sample data during development. This container should only be used
+  /// within debug builds.
+  ///
+  /// Example usage:
+  /// ```swift
+  /// #if DEBUG
+  /// let preview = PreviewContainer([User.self])
+  /// #endif
+  /// ```
+  @MainActor
+  public struct PreviewContainer {
 
     /// The underlying `ModelContainer` instance used for storing model data in memory.
     ///
     /// - Note: This is internal and should not be directly accessed outside the preview context.
-    internal let container: ModelContainer!
+    internal let container: ModelContainer
 
     /// A logger instance for logging SwiftData-related messages.
-    private let logger = SimpleLogger(category: .swiftData)
+    private let logger: SimpleLogger
 
     /// Creates a new in-memory SwiftData container for use in SwiftUI previews or tests.
     ///
@@ -42,37 +43,44 @@ public struct PreviewContainer {
     ///
     /// If the container fails to initialise, the app will terminate with a `fatalError`.
     public init(
-        _ types: any PersistentModel.Type...,
-        isStoredInMemoryOnly: Bool = true
+      _ types: any PersistentModel.Type...,
+      isStoredInMemoryOnly: Bool = true
     ) {
-        let schema = Schema(types)
-        let configuration = ModelConfiguration(
-            isStoredInMemoryOnly: isStoredInMemoryOnly
-        )
+      let logger = SimpleLogger(category: .swiftData)
+      self.logger = logger
 
-        do {
-            self.container = try ModelContainer(
-                for: schema,
-                configurations: configuration
-            )
-            self.logger.info("ModelContainer successfully initialized")
-        } catch {
-            self.container = nil
-            self.logger.error("ModelContainer failed to initialize: \(error, privacy: .public)")
-            fatalError("ERROR: ModelContainer failed to initialize")
-        }
+      let schema = Schema(types)
+      let configuration = ModelConfiguration(
+        isStoredInMemoryOnly: isStoredInMemoryOnly
+      )
+
+      do {
+        self.container = try ModelContainer(
+          for: schema,
+          configurations: configuration
+        )
+        logger.info("ModelContainer successfully initialized")
+      } catch {
+        logger.error("ModelContainer failed to initialize: \(error, privacy: .public)")
+        fatalError("ERROR: ModelContainer failed to initialize")
+      }
     }
 
     /// Inserts the given mock model objects into the preview container’s main context.
     ///
     /// - Parameter items: An array of models conforming to `PersistentModel` to insert into the
     /// container.
-    @MainActor
     internal func add(items: [any PersistentModel]) {
-        items.forEach {
-            container.mainContext.insert($0)
-        }
+      items.forEach {
+        container.mainContext.insert($0)
+      }
+
+      do {
+        try container.mainContext.save()
+      } catch {
+        logger.error("Failed to save preview data: \(error, privacy: .public)")
+      }
     }
-}
+  }
 
 #endif
